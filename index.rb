@@ -44,6 +44,18 @@ module Enumerable
     end
     value
   end
+
+  def my_none
+    value = false
+    if block_given?
+      0.upto(length - 1) do |i|
+        value = true unless yield self[i]
+      end
+    else
+      puts 'no block is given'
+    end
+    value
+  end
 end
 
 x = [1, 5, -4, 3, 89, 11, -35]
@@ -68,3 +80,9 @@ words.my_all do |str|
   str.size == 5
 end
 x.my_all(&:positive?)
+
+puts '<------ MY NONE ------>'
+words.my_none do |str|
+  str.size == 5
+end
+x.my_none(&:positive?)
