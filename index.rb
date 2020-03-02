@@ -1,15 +1,19 @@
 module Enumerable
   puts '<------ MY EACH ------>'
   def my_each
-    return 'no block given' unless block_given?
-
-    0.upto(length - 1) do |i|
-      yield self[i]
+    if block_given?
+      0.upto(length - 1) do |i|
+        yield self[i]
+      end
+    else
+      puts 'no block is given'
     end
     self
   end
-  x = [1, 5, -4, 3, 89, 11, -35]
-  x.my_each do |ele|
-    puts ele * 2
-  end
+end
+
+x = [1, 5, -4, 3, 89, 11, -35]
+
+x.my_each do |ele|
+  puts ele * ele
 end
