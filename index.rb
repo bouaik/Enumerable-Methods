@@ -83,6 +83,18 @@ module Enumerable
     end
     count
   end
+
+  def my_map
+    array = []
+    if block_given?
+      0.upto(length - 1) do |i|
+        array << yield(self[i])
+      end
+    else
+      puts 'no block is given'
+    end
+    array
+  end
 end
 
 x = [1, 5, -4, 3, 89, 11, -35]
@@ -125,3 +137,7 @@ words.my_count do |str|
   str.size == 5
 end
 x.my_count(&:positive?)
+
+puts '<------ MY MAP ------>'
+words.my_map(&:upcase)
+x.my_map { |ele| ele * 5 }
