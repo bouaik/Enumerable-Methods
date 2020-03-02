@@ -71,6 +71,18 @@ module Enumerable
     end
     value
   end
+
+  def my_count
+    count = 0
+    if block_given?
+      0.upto(length - 1) do |i|
+        count += 1 if yield self[i]
+      end
+    else
+      puts 'no block is given'
+    end
+    count
+  end
 end
 
 x = [1, 5, -4, 3, 89, 11, -35]
@@ -107,3 +119,9 @@ words.my_any do |str|
   str.size == 5
 end
 x.my_any(&:positive?)
+
+puts '<------ MY COUNT ------>'
+words.my_count do |str|
+  str.size == 5
+end
+x.my_count(&:positive?)
