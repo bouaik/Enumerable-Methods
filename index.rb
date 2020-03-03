@@ -84,14 +84,20 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
     count
   end
 
-  def my_map
+  def my_map(proc = nil)
     array = []
-    if block_given?
-      0.upto(length - 1) do |i|
-        array << yield(self[i])
+    if proc.nil?
+      if block_given?
+        0.upto(length - 1) do |i|
+          array << yield(self[i])
+        end
+      else
+        puts 'no block is given'
       end
     else
-      puts 'no block is given'
+      0.upto(length - 1) do |i|
+        array << proc.call(i)
+      end
     end
     array
   end
@@ -116,6 +122,7 @@ end
 
 x = [1, 5, -4, 3, 89, 11, -35]
 words = %w[bacon orang apple]
+my_proc = proc { |ele| ele * 2 }
 
 puts '<------ MY EACH ------>'
 x.my_each do |ele|
@@ -156,8 +163,9 @@ end
 x.my_count(&:positive?)
 
 puts '<------ MY MAP ------>'
-words.my_map(&:upcase)
-x.my_map { |ele| ele * 5 }
+x.my_map(my_proc)
+puts
+x.my_map { |ele| ele * 2 }
 
 puts '<------ MY INJECT ------>'
 x.my_inject(4) do |a, b|
