@@ -1,4 +1,4 @@
-module Enumerable
+module Enumerable # rubocop:disable Metrics/ModuleLength
   def my_each
     if block_given?
       0.upto(length - 1) do |i|
@@ -95,6 +95,23 @@ module Enumerable
     end
     array
   end
+
+  def my_inject(acc = nil)
+    if acc.nil?
+      acc = self[0]
+      index = 1
+    else
+      index = 0
+    end
+    if block_given?
+      index.upto(length - 1) do |i|
+        acc = yield(acc, self[i])
+      end
+    else
+      puts 'no block is given'
+    end
+    acc
+  end
 end
 
 x = [1, 5, -4, 3, 89, 11, -35]
@@ -141,3 +158,8 @@ x.my_count(&:positive?)
 puts '<------ MY MAP ------>'
 words.my_map(&:upcase)
 x.my_map { |ele| ele * 5 }
+
+puts '<------ MY INJECT ------>'
+x.my_inject(4) do |a, b|
+  a + b
+end
