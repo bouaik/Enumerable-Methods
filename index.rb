@@ -163,3 +163,10 @@ puts '<------ MY INJECT ------>'
 x.my_inject(4) do |a, b|
   a + b
 end
+
+puts '<------ TEST MY INJECT WITH A METHOD ------>'
+def multiply_els(arr)
+  arr.my_inject { |a, b| a * b }
+end
+
+multiply_els([2, 4, 5])
