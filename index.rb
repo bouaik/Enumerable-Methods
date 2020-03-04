@@ -27,16 +27,15 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
     array
   end
 
-  def my_all
-    value = true
+  def my_all?(patt = nil)
     if block_given?
-      0.upto(length - 1) do |i|
-        value = false unless yield self[i]
-      end
+      self.my_each { |i| return false unless yield(i) }
+    elsif patt.nil?
+      self.my_each { |i| return false unless i }
     else
-      puts 'no block is given'
+      self.my_each { |i| return false unless check_patt(i, patt) }
     end
-    value
+    true
   end
 
   def my_none
@@ -111,6 +110,14 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
       puts 'no block is given'
     end
     acc
+  end
+
+  def check_patt(idx, patt)
+    if patt.is_a? Class
+      idx.is_a?(patt)
+    elsif patt.is_a? Regexp
+      patt.match?(idx)
+    end
   end
 end
 
