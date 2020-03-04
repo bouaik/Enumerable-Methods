@@ -1,4 +1,4 @@
-module Enumerable # rubocop:disable Metrics/ModuleLength
+module Enumerable
   def my_each
     return to_enum unless block_given?
 
@@ -38,31 +38,19 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
     true
   end
 
-  def my_none
-    value = false
-    if block_given?
-      0.upto(length - 1) do |i|
-        value = true unless yield self[i]
-      end
-    else
-      puts 'no block is given'
-    end
-    value
+  def my_none?(arg = nil)
+    !my_all?(arg)
   end
 
-  def my_any
-    value = false
+  def my_any?(patt = nil)
     if block_given?
-      0.upto(length - 1) do |i|
-        if yield self[i]
-          value = true
-          break
-        end
-      end
+      my_each { |i| return true unless yield(i) }
+    elsif patt.nil?
+      my_each { |i| return true unless i }
     else
-      puts 'no block is given'
+      my_each { |i| return true unless check_patt(i, patt) }
     end
-    value
+    false
   end
 
   def my_count
