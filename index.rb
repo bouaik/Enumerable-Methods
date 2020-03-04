@@ -29,11 +29,11 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
 
   def my_all?(patt = nil)
     if block_given?
-      self.my_each { |i| return false unless yield(i) }
+      my_each { |i| return false unless yield(i) }
     elsif patt.nil?
-      self.my_each { |i| return false unless i }
+      my_each { |i| return false unless i }
     else
-      self.my_each { |i| return false unless check_patt(i, patt) }
+      my_each { |i| return false unless check_patt(i, patt) }
     end
     true
   end
