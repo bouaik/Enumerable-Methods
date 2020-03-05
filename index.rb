@@ -1,4 +1,4 @@
-module Enumerable
+module Enumerable # rubocop:disable Metrics/ModuleLength
   def my_each
     return to_enum unless block_given?
 
@@ -77,21 +77,81 @@ module Enumerable
     array
   end
 
-  def my_inject(acc = nil)
-    if acc.nil?
-      acc = self[0]
-      index = 1
-    else
-      index = 0
-    end
-    if block_given?
-      index.upto(length - 1) do |i|
-        acc = yield(acc, self[i])
+  def my_inject(total = nil, sym = nil) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity:
+    if block_given? && total.nil?
+      initial = to_a[0]
+      each_with_index do |e, i|
+        next if i.zero?
+
+        initial = yield(initial, e)
+        total = initial
       end
+    elsif (total.is_a? Numeric) && block_given?
+      each { |e| total = yield(total, e) }
+    elsif (total.is_a? Symbol) && !block_given?
+      return operator_eval(total)
+    elsif (total.is_a? Numeric) && (sym.is_a? Symbol) && !block_given?
+      return operator_eval(total, sym)
     else
-      puts 'no block is given'
+      raise 'no block given'
     end
-    acc
+    total
+  end
+  # rubocop:enable:
+
+  def add_it(initial)
+    sum = initial
+    each { |e| sum += e }
+    sum
+  end
+
+  def subtract_it(_initial)
+    minus = to_a[0]
+    each_with_index do |e, i|
+      next if i.zero?
+
+      minus -= e
+    end
+    minus
+  end
+
+  def divide_it(initial)
+    divide = initial
+    each_with_index do |e, i|
+      next if i.zero?
+
+      divide /= e
+    end
+    divide
+  end
+
+  def multiply_it(initial, total)
+    multip = 1
+    multip *= initial if total.is_a? Numeric
+    each { |e| multip *= e }
+    multip
+  end
+
+  def operator_eval(total = nil, sym = nil)
+    if total.is_a? Symbol
+      operator = total
+      initial = 0
+    else
+      operator = sym
+      initial = total
+    end
+    case operator
+    when :+
+      add_it(initial)
+    when :-
+      subtract_it(initial)
+    when :/
+      divide_it(initial)
+    when :*
+      multiply_it(initial, total)
+    else
+      raise "undefined method `#{operator}' for 1:Integer"
+    end
   end
 
   def check_patt(idx, patt)
