@@ -70,7 +70,7 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
     if proc.nil?
       return to_enum(:my_map) unless block_given?
 
-      my_each { |i| array << yield(self[i]) }
+      my_each { |i| array << yield(i) }
     else
       my_each { |i| array << proc.call(i) }
     end
@@ -159,6 +159,8 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
       idx.is_a?(patt)
     elsif patt.is_a? Regexp
       patt.match?(idx)
+    else
+      patt == idx
     end
   end
 end
@@ -166,3 +168,4 @@ end
 def multiply_els(arr)
   arr.my_inject { |a, b| a * b }
 end
+p [1].my_none?(1) == [1].none?(1)
