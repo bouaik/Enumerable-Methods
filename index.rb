@@ -38,19 +38,19 @@ module Enumerable
     true
   end
 
-  def my_none?(arg = nil)
-    !my_all?(arg)
-  end
-
-  def my_any?(patt = nil)
+  def my_any?(patt = nil, &block_name)
     if block_given?
-      my_each { |i| return true unless yield(i) }
+      my_each { |i| return true if block_name.yield(i) }
     elsif patt.nil?
-      my_each { |i| return true unless i }
+      my_each { |i| return true if i }
     else
-      my_each { |i| return true unless check_patt(i, patt) }
+      my_each { |i| return true if check_patt(i, patt) }
     end
     false
+  end
+
+  def my_none?(arg = nil, &block_name)
+    !my_any?(arg, &block_name)
   end
 
   def my_count
