@@ -53,14 +53,14 @@ module Enumerable
     !my_any?(arg, &block_name)
   end
 
-  def my_count
+  def my_count(item = nil)
     count = 0
     if block_given?
-      0.upto(length - 1) do |i|
-        count += 1 if yield self[i]
-      end
+      my_each { |i| count += 1 if yield(i) == true }
+    elsif item.nil?
+      my_each { count += 1 }
     else
-      puts 'no block is given'
+      my_each { |i| count += 1 if i == item }
     end
     count
   end
@@ -68,17 +68,11 @@ module Enumerable
   def my_map(proc = nil)
     array = []
     if proc.nil?
-      if block_given?
-        0.upto(length - 1) do |i|
-          array << yield(self[i])
-        end
-      else
-        puts 'no block is given'
-      end
+      return to_enum(:my_map) unless block_given?
+
+      my_each { |i| array << yield(self[i]) }
     else
-      0.upto(length - 1) do |i|
-        array << proc.call(i)
-      end
+      my_each { |i| array << proc.call(i) }
     end
     array
   end
